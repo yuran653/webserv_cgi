@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:41:53 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/11 15:39:59 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/11 18:01:04 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 int main() {
 	std::string path = "./cgi-bin/cgi-tester";
-	std::string body_temp_path = "./cgi-bin/temp_body";
+	std::string body_temp_path = "./cgi-bin/temp_body/.temp_body";
 	std::pair<int, std::string> response;
 	CGIInterface::executeCGI(response, path, body_temp_path);
 		std::cout << "Return code: [" << response.first << "]" << std::endl

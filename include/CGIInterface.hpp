@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:47 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/11 17:51:08 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/11 18:47:20 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unistd.h>
+#include <sys/wait.h>
 
 class CGIInterface {
 	private:

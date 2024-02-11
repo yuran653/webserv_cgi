@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/11 17:52:13 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/11 19:21:56 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,26 @@ int	CGIInterface::_execute(std::pair<int, std::string>& response,
 	(void)cgi_pass;
 	(void)body_temp_path;
 	response = std::make_pair(code, "OK");
-	return(0);
+	int fd[2];
+	if (pipe(fd) == -1)
+		return 1;
+	pid_t pid = fork();
+	if (pid == -1)
+		return 1;
+	if (pid == 0) {
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[1]);
+		close(fd[0]);
+		if (execl(cgi_pass.c_str(), body_temp_path.c_str()) == -1)
+			return 1;
+	} else {
+		int status;
+		waitpid(-1, &status, NULL);
+		if (WIFEXITED(status) == -1)
+			return 1;
+			response.first = 200;
+	}
+	return 0;
 }
 
 int CGIInterface::_checkFile(std::pair<int, std::string>& response, const std::string& path, const int& code) {
@@ -55,5 +74,5 @@ void CGIInterface::executeCGI(std::pair<int, std::string>& response,
 		return;
 	if (_checkFile(response, body_temp_path, 500))
 		return;
-	_execute(response, cgi_pass, body_temp_path, 200);
+	_execute(response, cgi_pass, body_temp_path, 502);
 }
