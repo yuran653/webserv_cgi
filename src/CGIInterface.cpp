@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/12 18:58:26 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/13 18:45:47 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,58 +36,59 @@ int CGIInterface::_deleteServiceArgs(char**& argv, char**& envp, const int& stat
 char** CGIInterface::_initEnv(const std::string& cgi_pass, const std::string& body_temp_path) {
 	char** envp = new char*[2];
 	envp[0] = new char[cgi_pass.size() + 1];
-	std::strcpy(envp[0], ("PATH=" + cgi_pass.erase(0,2)).c_str());
+	std::strcpy(envp[0], (("PATH=" + cgi_pass).erase(5, 1)).c_str());
+	std::cout << "ENVP -> " << envp[0] << std::endl;
 	envp[1] = NULL;
 	(void)body_temp_path;
-	return NULL;
+	return envp;
 }
 
-char** CGIInterface::_initArgv(const std::string& cgi_pass, const std::string& body_temp_path) {
-	char** argv = new char*[3];
-	argv[0] = new char[cgi_pass.size() + 1];
-	std::strcpy(argv[0], cgi_pass.c_str());
-	argv[1] = new char[body_temp_path.size() + 1];
-	std::strcpy(argv[1], body_temp_path.c_str());
-	argv[2] = NULL;
+char** CGIInterface::_initArgv(const std::string& cgi_pass) {
+	char** argv = new char*[2];
+	argv[0] = new char[cgi_pass.size()];
+	std::string tmp_cgi_pass(cgi_pass);
+	std::strcpy(argv[0], (tmp_cgi_pass.erase(0, 1)).c_str());
+	std::cout << "ARGV ->" << argv[0] << std::endl;
+	argv[1] = NULL;
 	return argv;
 }
 
 int	CGIInterface::_execute(std::pair<int, std::string>& response,
 	const std::string& cgi_pass, const std::string& body_temp_path,
 	const int& code) {
-	char** argv = _initArgv(cgi_pass, body_temp_path);
+	char** argv = _initArgv(cgi_pass);
 	char** envp = _initEnv(cgi_pass, body_temp_path);
-	std::cout << "argv: " << argv << std::endl;
-	std::cout << "argv[0]" << argv[0] << std::endl;
-	std::cout << "argv[1]" << argv[1] << std::endl;
-	std::cout << "argv[2]" << &argv[2] << std::endl;
-	// if (argv == NULL || envp == NULL)
-	// 	return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-	std::cout << "--- OK ---" << std::endl;
+	if (argv == NULL || envp == NULL)
+		return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
 	response = std::make_pair(code, "OK");
-	// int fd[2];
-	// if (pipe(fd) == -1)
-	// 	return 1;
-	// pid_t pid = fork();
-	// if (pid == -1)
-	// 	return 1;
-	// if (pid == 0) {
-	// 	dup2(fd[1], STDOUT_FILENO);
-	// 	close(fd[1]);
-	// 	close(fd[0]);
-	// 	if (execve(argv[0], argv, envp) == -1)
-	// 		return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-	// } else {
-	// 	close(fd[1]);
-
-	
+	int fd[2];
+	if (pipe(fd) == -1)
+		return 1;
+	pid_t pid = fork();
+	if (pid == -1)
+		return 1;
+	if (pid == 0) {
+		int file_fd = open(body_temp_path.c_str(), O_RDONLY);
+		if (file_fd == -1)
+			return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
+		dup2 (file_fd, STDIN_FILENO);
+		dup2(fd[1], STDOUT_FILENO);
+		close(file_fd);
+		close(fd[1]);
+		close(fd[0]);
+		if (execve(argv[0], argv, envp) == -1)
+			return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
+	} else {
+		close(fd[1]);
+			
 		
-	// 	int status;
-	// 	waitpid(-1, &status, 0);
-	// 	if (WIFEXITED(status) == 0)
-	// 		return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-	// 	response.first = 200;
-	// }
+		
+		int status;
+		waitpid(-1, &status, 0);
+		if (WIFEXITED(status) == false)
+			return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
+		response.first = 200;
+	}
 	return _deleteServiceArgs(argv, envp, EXIT_SUCCESS);
 }
 
