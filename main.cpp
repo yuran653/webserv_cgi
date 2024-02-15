@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:41:53 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/15 12:12:37 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:52:57 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,14 @@
 
 int main() {
 	// std::string path = "./cgi-bin/cgi_tester";
-	std::string path = "./cgi-bin/script_env.py";
+	// std::string path = "./cgi-bin/script_env.py";
+	// std::string path = "./cgi-bin/script_error.py";
+	std::string path = "./cgi-bin/script_error_exec.py";
+	// std::string path = "./cgi-bin/script_print_request.py";
+	// std::string body_temp_path = "./cgi-bin/temp_body/.temp_cgi_tester";
 	std::string body_temp_path = "./cgi-bin/temp_body/.temp_body";
+	// std::string body_temp_path = "./cgi-bin/temp_body/.temp_body_empty";
+	// std::string body_temp_path = "./cgi-bin/temp_body/.temp_body_no_access";
 	std::pair<int, std::string> response;
 	CGIInterface::executeCGI(response, path, body_temp_path);
 	std::cout << "Return code: [" << response.first << "]" << std::endl

@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/15 12:15:12 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:52:37 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int CGIInterface::_execute(std::pair<int, std::string>& response,
 		close(pipe_fd[0]);
 		dup2(pipe_fd[1],STDOUT_FILENO);
 		if (execve(argv[0], argv, envp) == -1)
-			return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
+			exit(_deleteServiceArgs(argv, envp, EXIT_FAILURE));
 	} else if (pid > 0) {
 		close(pipe_fd[1]);
 		char* buff = new char[BUFF_SIZE + 1];
@@ -79,8 +79,13 @@ int CGIInterface::_execute(std::pair<int, std::string>& response,
 			for (size_t i = 0; i <= BUFF_SIZE; i++)
 			buff[i] = '\0';
 		}
+		int status;
+		while (waitpid(-1, &status, WUNTRACED) == -1)
+			;
+		close(pipe_fd[0]);
 		delete[] buff;
-		response.first = 200;
+		if (WEXITSTATUS(status) != EXIT_FAILURE)
+			response.first = 200;
 	}
 	return _deleteServiceArgs(argv, envp, EXIT_SUCCESS);
 }
@@ -95,17 +100,6 @@ int CGIInterface::_openFile(const char* path, int& response_code, const int& cod
 void CGIInterface::executeCGI(std::pair<int, std::string>& response,
 			const std::string& cgi_pass, const std::string& body_temp_path) {
 	int file_fd;
-	// file_fd = open(cgi_pass.c_str(), O_RDONLY);
-	// if (file_fd == -1) {
-	// 	response.first = 502;
-	// 	return;
-	// }
-	// close(file_fd);
-	// file_fd = open(body_temp_path.c_str(), O_RDONLY);
-	// if (file_fd == -1) {
-	// 	response.first = 500;
-	// 	return;
-	// }
 	file_fd = _openFile(cgi_pass.c_str(), response.first, 502);
 	if (file_fd == -1)
 		return;
