@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/14 18:56:13 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/15 12:15:12 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,19 @@ int CGIInterface::_execute(std::pair<int, std::string>& response,
 		dup2(pipe_fd[1],STDOUT_FILENO);
 		if (execve(argv[0], argv, envp) == -1)
 			return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-	} else {
+	} else if (pid > 0) {
 		close(pipe_fd[1]);
-		if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-			return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
+		char* buff = new char[BUFF_SIZE + 1];
+		for (size_t i = 0; i <= BUFF_SIZE; i++)
+			buff[i] = '\0';
+		while (read(pipe_fd[0], buff, BUFF_SIZE)) {
+			response.second += std::string(buff);
+			for (size_t i = 0; i <= BUFF_SIZE; i++)
+			buff[i] = '\0';
+		}
+		delete[] buff;
+		response.first = 200;
 	}
-	
-	response.first = 200;
-	
 	return _deleteServiceArgs(argv, envp, EXIT_SUCCESS);
 }
 

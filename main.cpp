@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:41:53 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/14 16:49:14 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/15 12:12:37 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ int main() {
 	std::pair<int, std::string> response;
 	CGIInterface::executeCGI(response, path, body_temp_path);
 	std::cout << "Return code: [" << response.first << "]" << std::endl
-		<< "Response body: ->[" << response.second << "]<-" << std::endl; 
+		<< "Response body: ->" << std::endl << response.second << "<-" << std::endl; 
 	return 0;
 }
