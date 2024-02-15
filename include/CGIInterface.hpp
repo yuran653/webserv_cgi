@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:47 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/14 18:31:45 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/15 17:52:41 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define BUFF_SIZE 1024
+#define BUFF_SIZE 8
+#define EOF_STR "\0xEOF"
 
 class CGIInterface {
 	private:
