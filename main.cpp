@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:41:53 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/15 19:05:19 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/17 00:03:49 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,11 @@ int main() {
 	// std::string body_temp_path = "./cgi-bin/temp_body/.temp_body";
 	// std::string body_temp_path = "./cgi-bin/temp_body/.temp_body_empty";
 	// std::string body_temp_path = "./cgi-bin/temp_body/.temp_body_no_access";
-	std::pair<int, std::string> response;
-	CGIInterface::executeCGI(response, path, body_temp_path);
-	std::cout << "Return code: [" << response.first << "]" << std::endl
+	std::string header;
+	std::string body_path; (void)body_path;
+	int status = CGIInterface::executeCGI(header, body_path, path, body_temp_path);
+	std::cout << "Return code: [" << status << "]" << std::endl
 		// << "Response body: ->" << std::endl << response.second << "<-" << std::endl; 
-		<< "Response body: ->" << std::endl << response.second.substr(0, response.second.find("\r\n\r\n")) << "<-" << std::endl; 
+		<< "Response body: ->" << std::endl << header.substr(0, header.find("\r\n\r\n")) << "<-" << std::endl;
 	return 0;
 }

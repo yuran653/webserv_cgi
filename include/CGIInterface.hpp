@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:47 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/15 17:52:41 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/16 23:52:32 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define BUFF_SIZE 8
+#define MAX_HTTP_HDR 4096
 #define EOF_STR "\0xEOF"
 
 class CGIInterface {
@@ -31,7 +31,7 @@ class CGIInterface {
 		~CGIInterface();
 
 		static int		_openFile(const char* path, int& response_code, const int& code);
-		static int		_execute(std::pair<int, std::string>& response,
+		static int		_execute(std::string& header, std::string& body_path,
 			const std::string& cgi_pass, const int& file_fd);
 		static char**	_initArgv(const std::string& cgi_pass);
 		static char**	_initEnv();
@@ -39,7 +39,7 @@ class CGIInterface {
 		static void		_deleteCharArray(char**& array);
 
 	public:
-		static void	executeCGI(std::pair<int, std::string>& response,
+		static int	executeCGI(std::string& header, std::string& body_path,
 			const std::string& cgi_pass, const std::string& body_temp_path);
 
 		struct CGIInterfaceError : public std::runtime_error {
