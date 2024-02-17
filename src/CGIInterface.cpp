@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/17 00:18:16 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 01:04:32 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,18 @@ char** CGIInterface::_initArgv(const std::string& cgi_pass) {
 // 	return _deleteServiceArgs(argv, envp, EXIT_SUCCESS);
 // }
 
+size_t CGIInterface::_setBufSize() {
+	return (BUFF_SIZE > sizeof(DBL_CRLF) ? BUFF_SIZE : sizeof(DBL_CRLF));
+}
+
 int CGIInterface::_execute(std::string& header, std::string& body_path,
 		const std::string& cgi_pass, const int& file_fd) {
-	int exit_status = 5024;
+	int exit_status = 502;
 	char** argv = _initArgv(cgi_pass);
 	char** envp = _initEnv();
 	if (argv == NULL || envp == NULL)
 		return _deleteServiceArgs(argv, envp, exit_status);
+	size_t buff_size = _setBufSize();
 	if (dup2(file_fd, STDIN_FILENO) == -1)
 		return _deleteServiceArgs(argv, envp, exit_status);
 	int pipe_fd[2];
@@ -115,19 +120,22 @@ int CGIInterface::_execute(std::string& header, std::string& body_path,
 			exit(_deleteServiceArgs(argv, envp, exit_status));
 	} else if (pid > 0) {
 		close(pipe_fd[1]);
-		char* buff = new char[MAX_HTTP_HDR + 1];
-		for (size_t i = 0; i <= MAX_HTTP_HDR; i++)
+		char* buff = new char[buff_size + 1];
+		for (size_t i = 0; i <= buff_size; i++)
 			buff[i] = '\0';
-		while (read(pipe_fd[0], buff, MAX_HTTP_HDR)) {
-			// std::string buff_read(buff);
-			// response.second
-			header += std::string(buff);
-			for (size_t i = 0; i <= MAX_HTTP_HDR; i++)
+		while (read(pipe_fd[0], buff, buff_size)) {
+			std::string buff_read(buff);
+			header += buff_read;
+			if (header.size() > MAX_HTTP_HDR) {
+				exit_status = 413;
+				header.clear();
+				break;
+			}
+			for (size_t i = 0; i <= buff_size; i++)
 				buff[i] = '\0';
-		}
+		}			
 		close(pipe_fd[0]);
 		delete[] buff;
-		header += EOF_STR;
 		int status;
 		while (waitpid(-1, &status, WUNTRACED) == -1)
 			;
@@ -138,24 +146,17 @@ int CGIInterface::_execute(std::string& header, std::string& body_path,
 	return _deleteServiceArgs(argv, envp, exit_status);
 }
 
-int CGIInterface::_openFile(const char* path, int& response_code, const int& code) {
-	int file_fd = open(path, O_RDONLY);
-	if (file_fd == -1)
-		response_code = code;
-	return file_fd;
-}
-
 int	CGIInterface::executeCGI(std::string& header, std::string& body_path,
 			const std::string& cgi_pass, const std::string& body_temp_path) {
 	int code;
 	int file_fd;
-	file_fd = _openFile(cgi_pass.c_str(), code, 502);
+	file_fd = open(cgi_pass.c_str(), O_RDONLY);
 	if (file_fd == -1)
-		return code;
+		return 502;
 	close(file_fd);
-	file_fd = _openFile(body_temp_path.c_str(), code, 500);
+	file_fd = open(body_temp_path.c_str(), O_RDONLY);
 	if (file_fd == -1)
-		return code;
+		return 500;
 	code = _execute(header, body_path, cgi_pass, file_fd);
 	close(file_fd);
 	return code;

@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:41:53 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/17 00:03:49 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/17 18:30:54 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int main() {
 	std::string body_path; (void)body_path;
 	int status = CGIInterface::executeCGI(header, body_path, path, body_temp_path);
 	std::cout << "Return code: [" << status << "]" << std::endl
-		// << "Response body: ->" << std::endl << response.second << "<-" << std::endl; 
-		<< "Response body: ->" << std::endl << header.substr(0, header.find("\r\n\r\n")) << "<-" << std::endl;
+		// << "Response body: ->" << std::endl << header << "<-" << std::endl; 
+		<< "Response body: ->" << std::endl << header.substr(0, header.find(DBL_CRLF)) + DBL_CRLF << "<-" << std::endl;
 	return 0;
 }

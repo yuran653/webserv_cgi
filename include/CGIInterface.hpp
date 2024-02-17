@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:47 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/16 23:52:32 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 01:04:19 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,20 @@
 #include <sys/wait.h>
 
 #define MAX_HTTP_HDR 4096
-#define EOF_STR "\0xEOF"
+#define BUFF_SIZE 1
+// #define EOF_STR "\0xEOF"
+#define DBL_CRLF "\r\n\r\n"
 
 class CGIInterface {
 	private:
 		CGIInterface();
 		~CGIInterface();
 
-		static int		_openFile(const char* path, int& response_code, const int& code);
 		static int		_execute(std::string& header, std::string& body_path,
 			const std::string& cgi_pass, const int& file_fd);
 		static char**	_initArgv(const std::string& cgi_pass);
 		static char**	_initEnv();
+		static size_t	_setBufSize();
 		static int		_deleteServiceArgs(char**& argv, char**& envp, const int& status);
 		static void		_deleteCharArray(char**& array);
 
