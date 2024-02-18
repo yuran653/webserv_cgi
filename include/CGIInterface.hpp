@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:47 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/18 01:04:19 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 18:52:35 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include <sys/wait.h>
 
 #define MAX_HTTP_HDR 4096
-#define BUFF_SIZE 1
+#define BUFF_SIZE 512
 // #define EOF_STR "\0xEOF"
 #define DBL_CRLF "\r\n\r\n"
 
