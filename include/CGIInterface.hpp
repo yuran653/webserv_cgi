@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:47 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/18 18:52:35 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 19:23:49 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
 #include <iostream>
 #include <string>
 #include <fcntl.h>
@@ -24,7 +23,6 @@
 
 #define MAX_HTTP_HDR 4096
 #define BUFF_SIZE 512
-// #define EOF_STR "\0xEOF"
 #define DBL_CRLF "\r\n\r\n"
 
 class CGIInterface {

@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/18 19:20:53 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 19:23:14 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,46 +52,6 @@ char** CGIInterface::_initArgv(const std::string& cgi_pass) {
 	argv[1] = NULL;
 	return argv;
 }
-
-// int CGIInterface::_execute(std::pair<int, std::string>& response,
-// 	const std::string& cgi_pass, const int& file_fd) {
-// 	response.first = 502;
-// 	char** argv = _initArgv(cgi_pass);
-// 	char** envp = _initEnv();
-// 	if (argv == NULL || envp == NULL)
-// 		return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-// 	if (dup2(file_fd, STDIN_FILENO) == -1)
-// 		return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-// 	pid_t pid = fork();
-// 	if (pid == -1)
-// 		return _deleteServiceArgs(argv, envp, EXIT_FAILURE);
-// 	else if (pid == 0) {
-// 		dup2(pipe_fd[1],STDOUT_FILENO);
-// 		if (execve(argv[0], argv, envp) == -1) {
-// 			close
-// 			exit(_deleteServiceArgs(argv, envp, EXIT_FAILURE));
-// 			}
-// 	} else if (pid > 0) {
-// 		close(pipe_fd[1]);
-// 		char* buff = new char[BUFF_SIZE + 1];
-// 		for (size_t i = 0; i <= BUFF_SIZE; i++)
-// 			buff[i] = '\0';
-// 		while (read(pipe_fd[0], buff, BUFF_SIZE)) {
-// 			response.second += std::string(buff);
-// 			for (size_t i = 0; i <= BUFF_SIZE; i++)
-// 			buff[i] = '\0';
-// 		}
-// 		response.second += EOF_STR;
-// 		int status;
-// 		while (waitpid(-1, &status, WUNTRACED) == -1)
-// 			;
-// 		close(pipe_fd[0]);
-// 		delete[] buff;
-// 		if (WEXITSTATUS(status) != EXIT_FAILURE)
-// 			response.first = 200;
-// 	}
-// 	return _deleteServiceArgs(argv, envp, EXIT_SUCCESS);
-// }
 
 size_t CGIInterface::_setBufSize() {
 	size_t buff_size = BUFF_SIZE > sizeof(DBL_CRLF) - 1 ? BUFF_SIZE : sizeof(DBL_CRLF) - 1;
