@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/18 19:25:45 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 19:31:10 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ int CGIInterface::_execute(std::string& header, std::string& body_path,
 	char** envp = _initEnv();
 	if (argv == NULL || envp == NULL)
 		return _deleteServiceArgs(argv, envp, exit_status);
-	size_t buff_size = _setBufSize();
 	if (dup2(file_fd, STDIN_FILENO) == -1)
 		return _deleteServiceArgs(argv, envp, exit_status);
 	int pipe_fd[2];
@@ -90,6 +89,7 @@ int CGIInterface::_execute(std::string& header, std::string& body_path,
 			close(response_fd);
 			return (_deleteServiceArgs(argv, envp, 413));
 		}
+		size_t buff_size = _setBufSize();
 		char* buff = new char[buff_size + 1];
 		std::memset(buff, '\0', buff_size + 1);
 		size_t pos = std::string::npos;
