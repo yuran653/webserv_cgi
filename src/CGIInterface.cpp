@@ -6,7 +6,7 @@
 /*   By: jgoldste <jgoldste@student.42bangkok.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 12:40:44 by jgoldste          #+#    #+#             */
-/*   Updated: 2024/02/18 19:23:14 by jgoldste         ###   ########.fr       */
+/*   Updated: 2024/02/18 19:25:45 by jgoldste         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int CGIInterface::_execute(std::string& header, std::string& body_path,
 		int status;
 		while (waitpid(-1, &status, WUNTRACED) == -1)
 			;
-		if (WEXITSTATUS(status) != EXIT_FAILURE) // || WIFEXITED(status) == EXIT_SUCCESS) // <---
+		if (WEXITSTATUS(status) != EXIT_FAILURE || WIFEXITED(status) == EXIT_SUCCESS) // <---
 			exit_status = 200;
 	}
 	(void)body_path;
